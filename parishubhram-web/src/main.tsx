@@ -1,10 +1,15 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import * as maplibregl from 'maplibre-gl'
+import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
 import './index.css'
 import App from './App.tsx'
 import WardDashboard from './pages/WardDashboard.tsx'
 import StatsPage from './pages/StatsPage.tsx'
+
+// Point MapLibre to the Vite-bundled worker file so it loads in production
+maplibregl.setWorkerUrl(maplibreWorkerUrl)
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
