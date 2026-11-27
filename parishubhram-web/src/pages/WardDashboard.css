@@ -1,0 +1,386 @@
+/* ─── Ward Dashboard Page Styles ──────────────────────────────────────────── */
+
+.ward-dashboard-page {
+  min-height: 100vh;
+  background: var(--bg-color);
+  padding: 24px 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ── Back Button ── */
+.ward-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+  transition: all 0.15s ease;
+}
+
+.ward-back-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-light);
+}
+
+/* ── Hero Card ── */
+.ward-hero {
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.ward-hero-badge {
+  display: inline-block;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(21, 128, 61, 0.2);
+}
+
+.ward-hero-name {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.ward-hero-zone {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.ward-share-btn {
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.ward-share-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* ── Two-column layout ── */
+.ward-content-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .ward-content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Stats Row ── */
+.ward-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.ward-stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 16px 12px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.ward-stat-num {
+  font-size: 1.75rem;
+  font-weight: 800;
+}
+
+.ward-stat-lbl {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.ward-stat-total .ward-stat-num { color: var(--primary); }
+.ward-stat-open .ward-stat-num  { color: #dc2626; }
+.ward-stat-resolved .ward-stat-num { color: #16a34a; }
+
+/* ── Resolution Rate ── */
+.ward-resolution-card {
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+
+.ward-resolution-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  margin-bottom: 10px;
+}
+
+.ward-resolution-pct {
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.ward-progress-track {
+  background: var(--bg-color);
+  border-radius: 9999px;
+  height: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  margin-bottom: 10px;
+}
+
+.ward-progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.6s ease;
+}
+
+.ward-resolution-note {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ── Mini Map ── */
+.ward-minimap-card {
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+
+.ward-minimap-card h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 12px;
+}
+
+.ward-minimap {
+  width: 100%;
+  height: 240px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+/* ── Right Column: Reports ── */
+.ward-right-col {
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.ward-reports-heading {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ward-reports-count {
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 9999px;
+}
+
+/* ── Empty state ── */
+.ward-no-reports {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--text-muted);
+}
+
+.ward-no-reports span {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 12px;
+}
+
+/* ── Report Items ── */
+.ward-reports-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.ward-report-item {
+  display: flex;
+  gap: 12px;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+  transition: border-color 0.15s ease;
+}
+
+.ward-report-item:hover {
+  border-color: var(--primary);
+}
+
+.ward-report-item.ward-report-resolved {
+  opacity: 0.75;
+}
+
+.ward-report-thumb {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+  border: 1px solid var(--border-color);
+}
+
+.ward-report-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ward-report-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.ward-report-category {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.ward-report-severity {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.ward-report-desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.ward-report-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ward-report-status {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 9999px;
+}
+
+.status-open {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.status-resolved {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.ward-report-time {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* ── Loading / Error ── */
+.ward-loading,
+.ward-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 16px;
+  color: var(--text-muted);
+}
+
+.ward-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.ward-error span {
+  font-size: 2.5rem;
+}
+
+.ward-error button {
+  margin-top: 8px;
+  padding: 10px 20px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
