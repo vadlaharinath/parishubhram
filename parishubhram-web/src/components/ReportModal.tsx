@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { compressImage } from '../lib/imageCompressor';
+import { useToast } from '../lib/toast';
 import './ReportModal.css';
+
+const RATE_LIMIT_KEY = 'parishubhram_submit_history';
+const MAX_REPORTS_PER_WINDOW = 3;
+const WINDOW_MS = 5 * 60 * 1000; // 5 minutes
 
 interface ReportModalProps {
   isOpen: boolean;
@@ -21,6 +26,7 @@ const CATEGORIES = [
 ];
 
 export default function ReportModal({ isOpen, onClose, onSuccess, cityId }: ReportModalProps) {
+  const { showToast } = useToast();
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [category, setCategory] = useState('garbage_dump');
@@ -37,7 +43,7 @@ export default function ReportModal({ isOpen, onClose, onSuccess, cityId }: Repo
   // 1. One-click GPS Location Grabber + Free Reverse Geocoding
   const handleGetLocation = () => {
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported by your browser');
+      showToast('Geolocation is not supported by your browser.', 'error');
       return;
     }
     setLocating(true);
@@ -74,7 +80,7 @@ export default function ReportModal({ isOpen, onClose, onSuccess, cityId }: Repo
         }
       },
       (err) => {
-        alert(`Location permission denied or unavailable: ${err.message}`);
+        showToast(`Location unavailable: ${err.message}`, 'error');
         setLocating(false);
       },
       { enableHighAccuracy: true, timeout: 10000 }
@@ -95,7 +101,7 @@ export default function ReportModal({ isOpen, onClose, onSuccess, cityId }: Repo
     }
   };
 
-  // 3. Form Submit Handler
+  // 3. Form Submit Handler (with anti-spam rate limiting)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!photo) {
@@ -105,6 +111,21 @@ export default function ReportModal({ isOpen, onClose, onSuccess, cityId }: Repo
     if (!location) {
       setErrorMsg('Please capture your GPS location.');
       return;
+    }
+
+    // Rate-limit check: max 3 reports per 5 minutes per browser
+    try {
+      const now = Date.now();
+      const raw = localStorage.getItem(RATE_LIMIT_KEY);
+      const history: number[] = raw ? JSON.parse(raw) : [];
+      const recent = history.filter((ts) => now - ts < WINDOW_MS);
+      if (recent.length >= MAX_REPORTS_PER_WINDOW) {
+        const waitSec = Math.ceil((WINDOW_MS - (now - recent[0])) / 1000);
+        setErrorMsg(`Please wait ${waitSec}s before submitting another report (spam protection).`);
+        return;
+      }
+    } catch {
+      // Ignore localStorage errors in private browsing
     }
 
     setSubmitting(true);
@@ -142,6 +163,17 @@ export default function ReportModal({ isOpen, onClose, onSuccess, cityId }: Repo
       });
 
       if (insertError) throw insertError;
+
+      // Record submission timestamp for client-side rate limiting
+      try {
+        const now = Date.now();
+        const raw = localStorage.getItem(RATE_LIMIT_KEY);
+        const history: number[] = raw ? JSON.parse(raw) : [];
+        const updated = [...history.filter((ts) => now - ts < WINDOW_MS), now];
+        localStorage.setItem(RATE_LIMIT_KEY, JSON.stringify(updated));
+      } catch {
+        // Ignore storage errors
+      }
 
       // Done! Reset & notify parent
       setSubmitting(false);

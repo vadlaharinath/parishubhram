@@ -143,8 +143,26 @@ export default function ReportFeed({
                   className="feed-card-img"
                 />
                 <span className={`status-tag status-${report.status}`}>
-                  ● {report.status === 'resolved' ? 'RESOLVED 🟢' : 'ACTIVE 🔴'}
+                  ● {report.status === 'resolved' ? 'RESOLVED 🟢' : report.status === 'in_progress' ? 'IN PROGRESS 🟡' : 'ACTIVE 🔴'}
                 </span>
+                {(report.seen_count || 0) >= 5 && report.status !== 'resolved' && (
+                  <span
+                    style={{
+                      position: 'absolute',
+                      top: '10px',
+                      left: '10px',
+                      background: '#7c3aed',
+                      color: '#ffffff',
+                      fontSize: '0.7rem',
+                      fontWeight: 800,
+                      padding: '4px 9px',
+                      borderRadius: '9999px',
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+                    }}
+                  >
+                    🔥 HIGH PRIORITY
+                  </span>
+                )}
               </div>
 
               {/* Card Body */}

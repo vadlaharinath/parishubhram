@@ -3,7 +3,17 @@ import { useParams, useNavigate } from 'react-router-dom';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { supabase } from '../lib/supabase';
+import { useToast } from '../lib/toast';
 import './WardDashboard.css';
+
+interface WardOfficial {
+  id: string;
+  name: string;
+  role: string;
+  party: string | null;
+  phone: string | null;
+  email: string | null;
+}
 
 // ─── Type Definitions ──────────────────────────────────────────────────────
 interface WardDetail {
@@ -62,9 +72,11 @@ function timeAgo(dateStr: string) {
 export default function WardDashboard() {
   const { wardId } = useParams<{ wardId: string }>();
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const [ward, setWard] = useState<WardDetail | null>(null);
   const [reports, setReports] = useState<WardReport[]>([]);
+  const [officials, setOfficials] = useState<WardOfficial[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -97,6 +109,14 @@ export default function WardDashboard() {
 
         if (reportErr) throw reportErr;
         setReports(reportData || []);
+
+        // 3. Get responsible officials for this ward (if seeded)
+        const { data: offData } = await supabase
+          .from('officials')
+          .select('id, name, role, party, phone, email')
+          .eq('ward_id', wardId)
+          .eq('is_active', true);
+        setOfficials((offData as WardOfficial[]) || []);
       } catch (err: any) {
         setError(err.message || 'Failed to load ward data');
       } finally {
@@ -258,7 +278,7 @@ export default function WardDashboard() {
           className="ward-share-btn"
           onClick={() => {
             navigator.clipboard.writeText(window.location.href);
-            alert('✅ Ward URL copied to clipboard!');
+            showToast('Ward URL copied to clipboard!', 'success');
           }}
         >
           🔗 Share Ward
@@ -307,6 +327,50 @@ export default function WardDashboard() {
                 ? '📭 No complaints filed for this ward yet'
                 : '🚨 Low — most complaints unresolved'}
             </p>
+          </div>
+
+          {/* Responsible Official / Corporator Card */}
+          <div className="ward-resolution-card">
+            <div className="ward-resolution-header">
+              <span>🏛️ Responsible Official</span>
+              <button
+                onClick={() => navigate('/officials')}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--primary)',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                }}
+              >
+                All Officials →
+              </button>
+            </div>
+            {officials.length === 0 ? (
+              <p className="ward-resolution-note">
+                Corporator / sanitation official details not yet linked for this ward.
+              </p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {officials.map((off) => (
+                  <div key={off.id} style={{ fontSize: '0.85rem' }}>
+                    <div style={{ fontWeight: 700, color: 'var(--text-main)' }}>
+                      {off.name}{' '}
+                      <span style={{ fontSize: '0.72rem', color: 'var(--primary)' }}>
+                        ({off.role.toUpperCase()}
+                        {off.party ? ` • ${off.party}` : ''})
+                      </span>
+                    </div>
+                    {off.phone && (
+                      <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                        📞 {off.phone}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Mini Map */}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from './lib/supabase';
+import { useToast } from './lib/toast';
 import CivicMap from './components/CivicMap';
 import ReportModal from './components/ReportModal';
 import ReportFeed from './components/ReportFeed';
@@ -16,6 +17,7 @@ interface Ward {
 
 export default function App() {
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const [wards, setWards] = useState<Ward[]>([]);
   const [cityId, setCityId] = useState<string>('');
@@ -97,13 +99,13 @@ export default function App() {
   }, []);
 
   const handleReportSuccess = () => {
-    alert('🎉 Report submitted successfully!');
+    showToast('Report submitted! PostGIS tagged the ward automatically.', 'success');
     setRefreshTrigger((prev) => prev + 1);
     fetchData();
   };
 
   const handleResolveSuccess = () => {
-    alert('✨ Spot marked as resolved with photo proof!');
+    showToast('Spot marked as resolved with photo proof!', 'success');
     setRefreshTrigger((prev) => prev + 1);
     fetchData();
   };
@@ -128,6 +130,7 @@ export default function App() {
         </div>
 
         <div className="navbar-right">
+          <Link to="/officials" className="stats-nav-link">🏛️ Officials</Link>
           <Link to="/stats" className="stats-nav-link">📊 Analytics</Link>
           <button
             onClick={() => setIsReportModalOpen(true)}
